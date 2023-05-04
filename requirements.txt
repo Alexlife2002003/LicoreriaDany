@@ -1,0 +1,4 @@
+django==4.1.6
+mysqlclient
+Pillow
+six
