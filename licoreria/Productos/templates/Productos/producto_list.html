@@ -1,0 +1,113 @@
+{% extends 'base2.html' %}
+
+{% block titulo %}
+    Lista de Productos
+{% endblock titulo %}
+
+{% block contenido %}
+<h1>Lista de Productos</h1>
+<form action="{% url 'Producto:buscar_materia' %}" method="post" id="form">
+    {% csrf_token %}
+    <table class="table">
+        <tr>
+            <td>{{form.clave}}</td>
+            <td>{{form.nombre}}</td>
+            <td>{{form.tamanio}}</td>
+            <td>{{form.precio}}</td>
+            <td>{{form.categoria}}</td>
+            <td>{{form.tipo}}</td>
+            
+            <td>
+                {{form.programa}}
+            </td>
+            <td>
+                <input class="btn btn-success" type="submit" value="Buscar">
+                <input type="hidden" name="page" id="page">
+            </td>
+        </tr>
+    </table>
+    
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th><input type="checkbox" name="todos" id="selTodos"></th>
+            <th>Clave</th>
+            <th>Nombre</th>
+            <th>Tamaño</th>
+            <th>Precio Bodega</th>
+            <th>Precio Publico</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+            
+        </tr>
+    </thead>
+        <tbody>
+            <form action="{% url 'Producto:eliminar_todas' %}" method="post">
+                {% csrf_token %}
+            {% for producto in object_list %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="{{producto.clave}}" >
+                    </td>
+                    <td>{{producto.clave}}</td>
+                    <td>{{producto.nombre}}</td>
+                    <td>{{producto.get_tamanio_display}}</td>
+                    <td>{{producto.precio}}</td>
+                    <td>{{producto.pricedup}}</td>
+                    <td>{{producto.categoria}}</td>
+                    <td>{{producto.tipo}}</td>
+                    
+                    <td>
+                        <a class="btn btn-sm btn-primary" 
+                            href="{% url 'Producto:editar_producto' producto.clave %}">
+                            Editar
+                        </a>
+                        <a class="btn btn-sm btn-danger" 
+                            href="{% url 'Producto:eliminar_producto' producto.clave %}">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+       
+        </tbody>
+    </table>
+    <button type="submit">Eliminar</button>
+    </form>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="javascript:enviar(1);">&laquo; first</a>
+                <a href="javascript:enviar({{ page_obj.previous_page_number }});">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="javascript:enviar({{ page_obj.next_page_number }});">next</a>
+                <a href="javascript:enviar({{ page_obj.paginator.num_pages }});">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock contenido %}
+
+{% block scripts %}
+<script>
+    function enviar(page){
+        $("#page").val(page);
+        $("#form").submit();
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        $("#selTodos").click(function() {
+           $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+     });
+</script>
+{% endblock scripts %}
+    
