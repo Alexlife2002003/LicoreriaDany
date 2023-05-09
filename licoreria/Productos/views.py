@@ -45,7 +45,7 @@ def eliminar_producto(request, clave):
     Producto.objects.get(clave=clave).delete()
     return redirect('Producto:lista_productos')
 
-class Bienvenido(TemplateView):
+class Bienvenido(LoginRequiredMixin,TemplateView):
     template_name = 'home.html'
 
 
