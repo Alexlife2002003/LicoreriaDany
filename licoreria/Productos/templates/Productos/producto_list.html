@@ -39,6 +39,7 @@
             <th>Precio Publico</th>
             <th>Categoria</th>
             <th>Tipo</th>
+            <th>Existencia</th>
             <th>Acciones</th>
             
         </tr>
@@ -58,7 +59,7 @@
                     <td>{{producto.pricedup}}</td>
                     <td>{{producto.categoria}}</td>
                     <td>{{producto.tipo}}</td>
-                    
+                    <td>{{producto.existencia}}</td>
                     <td>
                         <a class="btn btn-sm btn-primary" 
                             href="{% url 'Producto:editar_producto' producto.clave %}">

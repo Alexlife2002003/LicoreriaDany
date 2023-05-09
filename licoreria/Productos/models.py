@@ -65,7 +65,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=7, decimal_places=2)
     categoria = models.ForeignKey("Productos.Categoria", verbose_name="Categoria", on_delete=models.DO_NOTHING)
     tipo = models.ForeignKey("Productos.Tipo", verbose_name="Tipo", on_delete=models.DO_NOTHING)
-    
+    existencia=models.DecimalField(max_digits=5, decimal_places=0)
     
     @property
     def pricedup(self):
