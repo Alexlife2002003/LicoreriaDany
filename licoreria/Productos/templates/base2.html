@@ -128,27 +128,47 @@
           </li>
           <li class="nav-item nav-category">CRUDS</li>
           <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" data-bs-toggle="collapse" href="#productos" aria-expanded="false" aria-controls="productos">
               <i class="menu-icon mdi mdi-card-text-outline"></i>
               <span class="menu-title"> Productos</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="form-elements">
+            <div class="collapse" id="productos">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"><a class="nav-link" href="{% url 'Producto:lista_productos' %}">Lista de Productos</a></li>
               </ul>
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"><a class="nav-link" href="{% url 'Producto:nuevo_producto' %}">Nuevo Producto</a></li>
               </ul>
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><a class="nav-link" href="#">Aumentar Existencia</a></li>
+              </ul>
+
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+            <a class="nav-link" data-bs-toggle="collapse" href="#proveedores" aria-expanded="false" aria-controls="proveedores">
+              <i class="menu-icon mdi mdi-card-text-outline"></i>
+              <span class="menu-title"> Proveedores</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="proveedores">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><a class="nav-link" href="{% url 'lista_proveedores' %}">Lista de Proovedores</a></li>
+              </ul>
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><a class="nav-link" href="{% url 'nuevo_proveedor' %}">Nuevo Proveedor</a></li>
+              </ul>
+
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#usuarios" aria-expanded="false" aria-controls="usuarios">
               <i class="menu-icon mdi mdi-card-text-outline"></i>
               <span class="menu-title">Usuarios</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="icons">
+            <div class="collapse" id="usuarios">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="#">Lista de Usuarios</a></li>
               </ul>

@@ -7,7 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',Bienvenido.as_view(),name='bienvenida'),
     path('productos/', include('Productos.urls')),
-    path('usuarios',include('Usuarios.urls'))
+    path('usuarios',include('Usuarios.urls')),
+    path('proveedores',include('Proveedores.urls')),
     
 ]
 

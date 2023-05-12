@@ -1,11 +1,11 @@
 {% extends 'base2.html' %}
 
 {% block titulo %}
-    Nuevo Producto
+    Editar Proveedor
 {% endblock titulo %}
     
 {% block contenido %}
-    <h1>Nuevo Producto</h1>
+    <h1>Actualizar Proveedor</h1>
     <form method="post">
         {% csrf_token %}
         {{form.as_p}}

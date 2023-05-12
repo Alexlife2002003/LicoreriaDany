@@ -20,7 +20,7 @@ class FormProducto(forms.ModelForm):
             ),
             #'optativa': forms.CheckboxInput(attrs=()'class':'form-control'),
             'precio': forms.NumberInput(
-                attrs={'class':'form-control','placeholder':'precio bodega'}
+                attrs={'class':'form-control','placeholder':'Precio Bodega'}
             ),
             'categoria': forms.Select(
                 attrs={'class':'form-control','data-url':reverse_lazy('Producto:busca_tipo')}
@@ -30,6 +30,7 @@ class FormProducto(forms.ModelForm):
             ),
             
         }
+
 
 class FormProductoEditar(FormProducto):
     class Meta:

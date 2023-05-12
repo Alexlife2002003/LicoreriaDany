@@ -1,24 +1,25 @@
 {% extends 'base2.html' %}
 
 {% block titulo %}
-    Lista de Productos
+    Lista de Proveedores
 {% endblock titulo %}
 
 {% block contenido %}
-<h1>Lista de Productos</h1>
-<form action="{% url 'Producto:buscar_materia' %}" method="post" id="form">
+<h1>Lista de Proveedores</h1>
+<form action="{% url 'buscar_proveedor' %}" method="post" id="form">
     {% csrf_token %}
     <table class="table">
         <tr>
             <td>{{form.clave}}</td>
-            <td>{{form.nombre}}</td>
-            <td>{{form.tamanio}}</td>
-            <td>{{form.precio}}</td>
-            <td>{{form.categoria}}</td>
-            <td>{{form.tipo}}</td>
+            <td>{{form.nombreEmpresa}}</td>
+            <td>{{form.rfc}}</td>
+            <td>{{form.nombreSuperevisor}}</td>
+            <td>{{form.diasPedido}}</td>
+            <td>{{form.diasSurtido}}</td>
+            <td>{{form.Descripcion}}</td>
             
             <td>
-                {{form.programa}}
+                {{form.proveedor}}
             </td>
             <td>
                 <input class="btn btn-success" type="submit" value="Buscar">
@@ -33,40 +34,38 @@
         <tr>
             <th><input type="checkbox" name="todos" id="selTodos"></th>
             <th>Clave</th>
-            <th>Nombre</th>
-            <th>Tamaño</th>
-            <th>Precio Bodega</th>
-            <th>Precio Publico</th>
-            <th>Categoria</th>
-            <th>Tipo</th>
-            <th>Existencia</th>
+            <th>Nombre Empresa</th>
+            <th>R.F.C</th>
+            <th>Nombre del Supervisor</th>
+            <th>Dia Pedido</th>
+            <th>Dia Surtido</th>
+            <th>Descripcion</th>
             <th>Acciones</th>
             
         </tr>
     </thead>
         <tbody>
-            <form action="{% url 'Producto:eliminar_todas' %}" method="post">
+            <form action="{% url 'eliminar_proveedores' %}" method="post">
                 {% csrf_token %}
-            {% for producto in object_list %}
+            {% for proveedor in object_list %}
                 <tr>
                     <td>
-                        <input type="checkbox" name="{{producto.clave}}" >
+                        <input type="checkbox" name="{{proveedor.clave}}" >
                     </td>
-                    <td>{{producto.clave}}</td>
-                    <td>{{producto.nombre}}</td>
-                    <td>{{producto.get_tamanio_display}}</td>
-                    <td>{{producto.precio}}</td>
-                    <td>{{producto.pricedup}}</td>
-                    <td>{{producto.categoria}}</td>
-                    <td>{{producto.tipo}}</td>
-                    <td>{{producto.existencia}}</td>
+                    <td>{{proveedor.clave}}</td>
+                    <td>{{proveedor.nombreEmpresa}}</td>
+                    <td>{{proveedor.rfc}}</td>
+                    <td>{{proveedor.nombreSupervisor}}</td>
+                    <td>{{proveedor.get_diasPedido_display}}</td>
+                    <td>{{proveedor.get_diasSurtido_display}}</td>
+                    <td>{{proveedor.Descripcion}}</td>
                     <td>
                         <a class="btn btn-sm btn-primary" 
-                            href="{% url 'Producto:editar_producto' producto.clave %}">
+                            href="{% url 'editar_proveedor' proveedor.clave %}">
                             Editar
                         </a>
                         <a class="btn btn-sm btn-danger" 
-                            href="{% url 'Producto:eliminar_producto' producto.clave %}">
+                            href="{% url 'eliminar_proveedor' proveedor.clave %}">
                             Eliminar
                         </a>
                     </td>
@@ -111,3 +110,4 @@
      });
 </script>
 {% endblock scripts %}
+    
