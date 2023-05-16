@@ -1,7 +1,12 @@
 from django import forms
 from .models import Producto
 from django.urls import reverse_lazy
+from .models import Venta
 
+
+
+class FormExistencia(forms.Form):
+    existencia = forms.DecimalField(max_digits=5, decimal_places=0, label='Existencia')
 
 class FormProducto(forms.ModelForm):
     class Meta:
@@ -44,3 +49,9 @@ class FiltrosProducto(FormProducto):
         
         for field in self.fields:
             self.fields[field].required = False
+
+######################Venta
+class VentaForm(forms.ModelForm):
+    class Meta:
+        model = Venta
+        fields = ['producto', 'cantidad']

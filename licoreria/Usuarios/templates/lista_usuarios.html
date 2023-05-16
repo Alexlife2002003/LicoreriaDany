@@ -1,0 +1,107 @@
+{% extends 'base2.html' %}
+
+{% block titulo %}
+    Lista de usuarios
+{% endblock titulo %}
+
+{% block contenido %}
+<h1>Lista de usuarios</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><input type="checkbox" name="todos" id="selTodos"></th>
+            <th>Nombre de usuario</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>E-mail</th>
+            <th>Grupos</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+        <tbody>
+            <form action="{% url 'asignar_grupo' %}" method="post">
+                {% csrf_token %}
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="{{usuario.id}}" >
+                    </td>
+
+                    <td>{{usuario.username}}</td>
+                    <td>{{usuario.first_name}}</td>
+                    <td>{{usuario.last_name}}</td>
+                    <td>{{usuario.email}}</td>
+                    <td class="background-color-red">
+                            {% if usuario.groups.all %}
+                                {% for grupo in usuario.groups.all %}
+                                    {{grupo.name}}
+                                    {% if not forloop.last %}
+                                        ,
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                Sin asignar
+                            {% endif %}
+                        </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" 
+                            href="#">
+                            Editar
+                        </a>
+                        <a class="btn btn-sm btn-danger" 
+                            href="{% url 'eliminar_usuario' usuario.id%}">
+                            Eliminar
+                        </a>
+                        <a class="btn btn-sm btn-warning" 
+                            href="{% url 'remover_grupos'  usuario.id%}">
+                            Eliminar Grupos
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+       
+        </tbody>
+    </table>
+    <select name="grupo">
+        {% for grupo in grupos  %}
+            <option value="{{grupo.id}}">{{grupo.name}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Asignar</button>
+    </form>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="javascript:enviar(1);">&laquo; first</a>
+                <a href="javascript:enviar({{ page_obj.previous_page_number }});">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="javascript:enviar({{ page_obj.next_page_number }});">next</a>
+                <a href="javascript:enviar({{ page_obj.paginator.num_pages }});">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock contenido %}
+
+{% block scripts %}
+    <script>
+        function enviar(page){
+            $("#page").val(page);
+            $("#form").submit();
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#selTodos").click(function() {
+               $('input:checkbox').not(this).prop('checked', this.checked);
+            });
+         });
+    </script>
+{% endblock scripts %}
+    

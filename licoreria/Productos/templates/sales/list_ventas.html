@@ -47,30 +47,28 @@
         <tbody>
             <form action="{% url 'Producto:eliminar_todas' %}" method="post">
                 {% csrf_token %}
-            {% for producto in object_list %}
+                
+            {% for venta in ventas %}
                 <tr>
                     <td>
                         <input type="checkbox" name="{{producto.clave}}" >
                     </td>
-                    <td>{{producto.clave}}</td>
-                    <td>{{producto.nombre}}</td>
-                    <td>{{producto.get_tamanio_display}}</td>
-                    <td>{{producto.precio}}</td>
-                    <td>{{producto.pricedup}}</td>
-                    <td>{{producto.categoria}}</td>
-                    <td>{{producto.tipo}}</td>
-                    <td>{{producto.existencia}}</td>
+                    <td>{{venta.producto.nombre}}</td>
+                    <td>{{venta.cantidad}}</td>
+                    <td>{{venta.fecha}}</td>
+                    <td>{{venta.subtotal}}</td>
+
                     <td>
                         <a class="btn btn-sm btn-primary" 
-                            href="{% url 'Producto:editar_producto' producto.clave %}">
+                        href="#">
                             Editar
                         </a>
                         <a class="btn btn-sm btn-primary" 
-                            href="{% url 'Producto:editar_productoExistencia' producto.clave %}">
+                        href="#">
                             Editar Existencia
                         </a>
                         <a class="btn btn-sm btn-danger" 
-                            href="{% url 'Producto:eliminar_producto' producto.clave %}">
+                            href="#">
                             Eliminar
                         </a>
                     </td>

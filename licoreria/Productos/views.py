@@ -5,10 +5,14 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Producto,Tipo
-from .forms import FormProducto,FiltrosProducto
+from .forms import FormProducto,FiltrosProducto,FormExistencia
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from .models import Venta
+from .forms import VentaForm
+
+
 
 class ListaProductos(LoginRequiredMixin,ListView):
     #permission_required='materias.permiso_alumno'
@@ -39,6 +43,29 @@ def editar_producto(request, clave):
         'form' : form
     }   
     return render(request, 'editar_producto.html', context)
+
+
+def editar_productoExistencia(request, clave):
+    producto = Producto.objects.get(clave=clave)
+
+    if request.method == 'POST':
+        # Remove the 'precio', 'categoria', 'tipo', and 'tamanio' fields from the form
+        form = FormExistencia(request.POST)
+        if form.is_valid():
+            # Update the 'existencia' field of the 'producto' instance
+            producto.existencia = form.cleaned_data['existencia']
+            producto.save()
+            return redirect('Producto:lista_productos')
+    else:
+        # Create a new form with just the 'existencia' field
+        form = FormExistencia(initial={'existencia': producto.existencia})
+    
+    context = {
+        'form' : form,
+        'producto': producto # Optionally pass the 'producto' instance to the context for display purposes
+    }   
+    return render(request, 'editar_productoExistencia.html', context)
+
 
     
 def eliminar_producto(request, clave):
@@ -116,3 +143,21 @@ def busca_tipos(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error':'Parametro invalido'},safe=False)
 
+
+
+######################################################## Ventas
+
+def create_venta(request):
+    if request.method == 'POST':
+        form = VentaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Producto:list')
+    else:
+        form = VentaForm()
+    
+    return render(request, 'sales/create_venta.html', {'form': form})
+
+def list_ventas(request):
+    ventas = Venta.objects.all()
+    return render(request, 'sales/list_ventas.html', {'ventas': ventas})

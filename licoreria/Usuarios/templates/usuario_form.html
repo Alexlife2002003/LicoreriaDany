@@ -1,0 +1,14 @@
+{% extends 'base2.html' %}
+
+{% block titulo %}
+    Nuevo Usuario
+{% endblock titulo %}
+    
+{% block contenido %}
+    <h1>Nuevo Usuario</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock contenido %}

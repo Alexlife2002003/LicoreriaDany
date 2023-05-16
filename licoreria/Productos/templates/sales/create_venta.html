@@ -1,0 +1,18 @@
+{% extends 'base2.html' %}
+
+{% block titulo %}
+    Nueva Venta
+{% endblock titulo %}
+    
+{% block contenido %}
+    <h1>Nueva Venta</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit">Create Sale</button>
+      </form>
+      
+{% endblock contenido %}
+
+
+  
