@@ -36,14 +36,14 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=7, decimal_places=2)
     categoria = models.ForeignKey(Categoria, verbose_name="Categoria", on_delete=models.DO_NOTHING)
     tipo = models.ForeignKey(Tipo, verbose_name="Tipo", on_delete=models.DO_NOTHING)
-    existencia=models.DecimalField(max_digits=5, decimal_places=0)
+    existencia=models.PositiveIntegerField()
 
     @property
     def pricedup(self):
         return round((self.precio * Decimal('1.25')).quantize(Decimal('0.01')))
 
     def __str__(self):
-        return f"{self.nombre}-{self.clave}"
+        return f"{self.nombre}-{self.get_tamanio_display()}-{self.tipo}"
 
 
 #########################################################
@@ -58,5 +58,4 @@ class Venta(models.Model):
 
     def __str__(self):
         return f"Venta #{self.pk} - {self.producto.nombre}"
-
 

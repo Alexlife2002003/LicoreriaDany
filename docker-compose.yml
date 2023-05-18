@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    container_name: licoreria
+    container_name: licoreriaDany
     #restart: always
     depends_on:
       - db
@@ -17,11 +17,11 @@ services:
 
   db:
     image: mariadb
-    container_name: licoreria-db
+    container_name: licoreriaDany-db
     #restart: always
     environment:
-      MYSQL_DATABASE: licoreria
-      MYSQL_USER: licoreriauser
+      MYSQL_DATABASE: licoreriaDany
+      MYSQL_USER: licoreriaDanyuser
       MYSQL_PASSWORD: "admin1234"
       MYSQL_ROOT_PASSWORD: admin1234
     volumes:

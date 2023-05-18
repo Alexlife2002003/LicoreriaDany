@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import ListView, TemplateView
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Producto,Tipo
-from .forms import FormProducto,FiltrosProducto,FormExistencia
+from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -52,8 +52,17 @@ def editar_productoExistencia(request, clave):
         # Remove the 'precio', 'categoria', 'tipo', and 'tamanio' fields from the form
         form = FormExistencia(request.POST)
         if form.is_valid():
+            # Get the existing 'existencia' value
+            existing_existencia = producto.existencia
+            
+            # Get the new 'existencia' value from the form
+            new_existencia = form.cleaned_data['existencia']
+            
+            # Calculate the updated 'existencia' value
+            updated_existencia = existing_existencia + new_existencia
+            
             # Update the 'existencia' field of the 'producto' instance
-            producto.existencia = form.cleaned_data['existencia']
+            producto.existencia = updated_existencia
             producto.save()
             return redirect('Producto:lista_productos')
     else:
@@ -65,6 +74,7 @@ def editar_productoExistencia(request, clave):
         'producto': producto # Optionally pass the 'producto' instance to the context for display purposes
     }   
     return render(request, 'editar_productoExistencia.html', context)
+
 
 
     
@@ -147,10 +157,17 @@ def busca_tipos(request):
 
 ######################################################## Ventas
 
+from .models import Producto
+
 def create_venta(request):
     if request.method == 'POST':
         form = VentaForm(request.POST)
         if form.is_valid():
+            venta = form.save(commit=False)  # Get the unsaved form instance
+            producto = venta.producto
+            existencia = producto.existencia - venta.cantidad  # Assuming the field name is "quantity"
+            producto.existencia = existencia
+            producto.save()
             form.save()
             return redirect('Producto:list')
     else:
@@ -158,6 +175,33 @@ def create_venta(request):
     
     return render(request, 'sales/create_venta.html', {'form': form})
 
-def list_ventas(request):
-    ventas = Venta.objects.all()
-    return render(request, 'sales/list_ventas.html', {'ventas': ventas})
+from .models import Venta
+
+def eliminar_venta(request, id):
+    venta = Venta.objects.get(id=id)
+
+    # Store the quantity for later use
+    cantidad = venta.cantidad
+
+    # Delete the venta
+    venta.delete()
+
+    # Reverse the subtraction
+    producto = venta.producto
+    producto.existencia += cantidad
+    producto.save()
+
+    return redirect('Producto:list')
+
+
+
+
+class ListaVentas(LoginRequiredMixin, ListView):
+    model = Venta
+    paginate_by = 10
+    template_name = 'sales/list_ventas.html'
+    context_object_name = 'ventas'
+    extra_context = {'form': FiltrosVenta}
+
+
+

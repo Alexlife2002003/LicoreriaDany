@@ -1,45 +1,23 @@
 {% extends 'base2.html' %}
 
 {% block titulo %}
-    Lista de Productos
+    Lista de Ventas
 {% endblock titulo %}
 
 {% block contenido %}
-<h1>Lista de Productos</h1>
-<form action="{% url 'Producto:buscar_materia' %}" method="post" id="form">
-    {% csrf_token %}
-    <table class="table">
-        <tr>
-            <td>{{form.clave}}</td>
-            <td>{{form.nombre}}</td>
-            <td>{{form.tamanio}}</td>
-            <td>{{form.precio}}</td>
-            <td>{{form.categoria}}</td>
-            <td>{{form.tipo}}</td>
-            
-            <td>
-                {{form.programa}}
-            </td>
-            <td>
-                <input class="btn btn-success" type="submit" value="Buscar">
-                <input type="hidden" name="page" id="page">
-            </td>
-        </tr>
-    </table>
-    
-</form>
+<h1>Lista de Ventas</h1>
+
 <table class="table">
     <thead>
         <tr>
             <th><input type="checkbox" name="todos" id="selTodos"></th>
-            <th>Clave</th>
             <th>Nombre</th>
             <th>Tamaño</th>
-            <th>Precio Bodega</th>
-            <th>Precio Publico</th>
-            <th>Categoria</th>
             <th>Tipo</th>
-            <th>Existencia</th>
+            <th>Precio Individual</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Total</th>
             <th>Acciones</th>
             
         </tr>
@@ -54,6 +32,9 @@
                         <input type="checkbox" name="{{producto.clave}}" >
                     </td>
                     <td>{{venta.producto.nombre}}</td>
+                    <td>{{venta.producto.get_tamanio_display}}</td>
+                    <td>{{venta.producto.tipo}}</td>
+                    <td>{{venta.producto.pricedup}}</td>
                     <td>{{venta.cantidad}}</td>
                     <td>{{venta.fecha}}</td>
                     <td>{{venta.subtotal}}</td>
@@ -68,7 +49,7 @@
                             Editar Existencia
                         </a>
                         <a class="btn btn-sm btn-danger" 
-                            href="#">
+                            href="{% url 'Producto:eliminar_venta' venta.id%}">
                             Eliminar
                         </a>
                     </td>

@@ -55,3 +55,11 @@ class VentaForm(forms.ModelForm):
     class Meta:
         model = Venta
         fields = ['producto', 'cantidad']
+
+class FiltrosVenta(VentaForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(FiltrosVenta, self).__init__(*args, **kwargs)
+        
+        for field in self.fields:
+            self.fields[field].required = False
