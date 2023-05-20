@@ -48,14 +48,34 @@ class Producto(models.Model):
 
 #########################################################
 
+from django.contrib.auth.models import User
+
 class Venta(models.Model):
+    fecha = models.DateField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.pk}"
+
+
+
+from decimal import Decimal, ROUND_UP
+from django.db import models
+from django.db.models import Sum, F, DecimalField, ExpressionWrapper
+
+
+class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
-    fecha = models.DateField(auto_now_add=True)
+    id_venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
 
     def subtotal(self):
         return self.producto.pricedup * self.cantidad
 
-    def __str__(self):
-        return f"Venta #{self.pk} - {self.producto.nombre}"
+    def total(self):
+        subtotals = DetalleVenta.objects.filter(id_venta=self.id_venta)
+        total = sum(detalle.subtotal() for detalle in subtotals)
+        rounded_total = Decimal(total).quantize(Decimal('0'), rounding=ROUND_UP)
+        return rounded_total
+
 

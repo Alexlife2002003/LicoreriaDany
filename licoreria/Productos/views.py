@@ -14,7 +14,7 @@ from .forms import VentaForm
 
 
 
-class ListaProductos(LoginRequiredMixin,ListView):
+class ListaProductos(ListView):
     #permission_required='materias.permiso_alumno'
     model=Producto
     paginate_by=10
@@ -82,7 +82,7 @@ def eliminar_producto(request, clave):
     Producto.objects.get(clave=clave).delete()
     return redirect('Producto:lista_productos')
 
-class Bienvenido(LoginRequiredMixin,TemplateView):
+class Bienvenido(TemplateView):
     template_name = 'home.html'
 
 
@@ -158,45 +158,8 @@ def busca_tipos(request):
 ######################################################## Ventas
 
 from .models import Producto
-
-def create_venta(request):
-    if request.method == 'POST':
-        form = VentaForm(request.POST)
-        if form.is_valid():
-            venta = form.save(commit=False)  # Get the unsaved form instance
-            producto = venta.producto
-            existencia = producto.existencia - venta.cantidad  # Assuming the field name is "quantity"
-            producto.existencia = existencia
-            producto.save()
-            form.save()
-            return redirect('Producto:list')
-    else:
-        form = VentaForm()
-    
-    return render(request, 'sales/create_venta.html', {'form': form})
-
-from .models import Venta
-
-def eliminar_venta(request, id):
-    venta = Venta.objects.get(id=id)
-
-    # Store the quantity for later use
-    cantidad = venta.cantidad
-
-    # Delete the venta
-    venta.delete()
-
-    # Reverse the subtraction
-    producto = venta.producto
-    producto.existencia += cantidad
-    producto.save()
-
-    return redirect('Producto:list')
-
-
-
-
-class ListaVentas(LoginRequiredMixin, ListView):
+#LoginRequieredMixin
+class ListaVentas(ListView):
     model = Venta
     paginate_by = 10
     template_name = 'sales/list_ventas.html'
@@ -204,4 +167,107 @@ class ListaVentas(LoginRequiredMixin, ListView):
     extra_context = {'form': FiltrosVenta}
 
 
+@login_required
+def create_venta(request):
+    user = request.user  # Assuming the user is authenticated # Get the current date
 
+    # Create a new Venta object with the current date
+    venta = Venta(usuario=user)
+    venta.save()
+
+    venta_pk = venta.pk
+    return redirect('Producto:detalle_venta_list')
+
+from .models import DetalleVenta
+from .forms import DetalleVentaForm
+
+def detalle_venta_list(request):
+    detalle_venta = DetalleVenta.objects.all()
+    return render(request, 'detalle_venta/list.html', {'detalle_venta': detalle_venta})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import DetalleVenta, Venta
+from .forms import DetalleVentaForm
+
+def detalle_venta_create(request):
+    if request.method == 'POST':
+        form = DetalleVentaForm(request.POST)
+        if form.is_valid():
+            detalle_venta = form.save(commit=False)  # Create the instance without saving to the database
+            last_venta = Venta.objects.last()  # Retrieve the last Venta instance
+            detalle_venta.id_venta = last_venta  # Assign the last Venta as id_venta
+            detalle_venta.save()  # Save the instance with the assigned id_venta
+            return redirect('Producto:detalle_venta_list')
+    else:
+        form = DetalleVentaForm()
+    return render(request, 'detalle_venta/create.html', {'form': form})
+
+
+def detalle_venta_update(request, pk):
+    detalle_venta = get_object_or_404(DetalleVenta, pk=pk)
+    if request.method == 'POST':
+        form = DetalleVentaForm(request.POST, instance=detalle_venta)
+        if form.is_valid():
+            form.save()
+            return redirect('detalle_venta_list')
+    else:
+        form = DetalleVentaForm(instance=detalle_venta)
+    return render(request, 'detalle_venta/update.html', {'form': form})
+
+def detalle_venta_delete(request, pk):
+    detalle_venta = get_object_or_404(DetalleVenta, pk=pk)
+    if request.method == 'POST':
+        detalle_venta.delete()
+        return redirect('detalle_venta_list')
+    return render(request, 'detalle_venta/delete.html', {'detalle_venta': detalle_venta})
+
+
+def detalle_venta_view(request, id_venta):
+    detalle_ventas = DetalleVenta.objects.filter(id_venta=id_venta)
+
+    return render(request, 'detalle_venta.html', {'detalle_ventas': detalle_ventas})
+
+
+    #return redirect('bienvenida', pk=venta_pk)
+
+
+#def create_venta(request):
+#    if request.method == 'POST':
+#        form = VentaForm(request.POST)
+#        if form.is_valid():
+#            venta = form.save(commit=False)  # Get the unsaved form instance
+#            producto = venta.producto
+#            existencia = producto.existencia - venta.cantidad  # Assuming the field name is "quantity"
+#            producto.existencia = existencia
+#            producto.save()
+#            form.save()
+#            return redirect('Producto:list')
+#    else:
+#        form = VentaForm()
+#    
+#    return render(request, 'sales/create_venta.html', {'form': form})
+#
+#from .models import Venta
+#
+#def eliminar_venta(request, id):
+#    venta = Venta.objects.get(id=id)
+#
+#    # Store the quantity for later use
+#    cantidad = venta.cantidad
+#
+#    # Delete the venta
+#    venta.delete()
+#
+#    # Reverse the subtraction
+#    producto = venta.producto
+#    producto.existencia += cantidad
+#    producto.save()
+#
+#    return redirect('Producto:list')
+#
+#
+#
+#
+#
+#
+#

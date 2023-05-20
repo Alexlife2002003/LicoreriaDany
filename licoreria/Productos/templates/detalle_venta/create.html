@@ -1,0 +1,23 @@
+{% extends 'base2.html' %}
+
+{% block titulo %}
+    Nueva Venta
+{% endblock titulo %}
+    
+{% block contenido %}
+    
+        <h1>Create Detalle Venta</h1>
+        
+        <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Create</button>
+        </form>
+        
+        <a href="{% url 'Producto:detalle_venta_list' %}">Back to List</a>
+
+      
+{% endblock contenido %}
+
+
+  

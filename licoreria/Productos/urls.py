@@ -11,9 +11,12 @@ urlpatterns = [
     path('buscar-materia', views.buscar_materia, name='buscar_materia'),
     path('eliminar-productos', views.eliminar_todas,name='eliminar_todas'),
     path('tipos/',views.busca_tipos,name='busca_tipo'),
-    path('createVenta/', views.create_venta, name='create'),
+    path('Venta/', views.create_venta, name='create'),
     path('listVenta/', views.ListaVentas.as_view(), name='list'),
-    path('eliminarVenta/<int:id>', views.eliminar_venta, name='eliminar_venta'),
+    path('detalle-venta-list',views.detalle_venta_list,name='detalle_venta_list'),
+    path('detalle-venta-create',views.detalle_venta_create,name='detalle_venta_create'),
+    path('detalle_venta/<int:id_venta>/', views.detalle_venta_view, name='detalle_venta'),
+    #path('eliminarVenta/<int:id>', views.eliminar_venta, name='eliminar_venta'),
     
     # 
     # path('nuevo', views.nueva_materia, name='nueva_materia'),

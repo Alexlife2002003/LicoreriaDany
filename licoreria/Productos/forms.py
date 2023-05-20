@@ -54,7 +54,7 @@ class FiltrosProducto(FormProducto):
 class VentaForm(forms.ModelForm):
     class Meta:
         model = Venta
-        fields = ['producto', 'cantidad']
+        fields = '__all__'
 
 class FiltrosVenta(VentaForm):
     
@@ -63,3 +63,10 @@ class FiltrosVenta(VentaForm):
         
         for field in self.fields:
             self.fields[field].required = False
+
+from .models import DetalleVenta
+
+class DetalleVentaForm(forms.ModelForm):
+    class Meta:
+        model = DetalleVenta
+        fields = ['producto', 'cantidad']
