@@ -17,14 +17,4 @@ urlpatterns = [
     path('detalle-venta-create',views.detalle_venta_create,name='detalle_venta_create'),
     path('detalle_venta/<int:id_venta>/', views.detalle_venta_view, name='detalle_venta'),
     path('buscar-venta', views.buscar_detalleventa, name='buscar_venta'),
-    #path('eliminarVenta/<int:id>', views.eliminar_venta, name='eliminar_venta'),
-    
-    # 
-    # path('nuevo', views.nueva_materia, name='nueva_materia'),
-   # path('eliminar/<str:pk>', views.EliminarMateria.as_view(), name='eliminar_materia'),
-    #path('editar/<int:clave>', views.editar_materia, name='editar_materia'),
-    #path('editar/<str:pk>', views.EditarMateria.as_view(), name='editar_materia'),
-    #path('buscar-materia', views.buscar_materia, name='buscar_materia'),
-    #path('eliminar-materias', views.eliminar_todas,name='eliminar_todas')
-
 ]

@@ -1,16 +1,14 @@
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect,get_object_or_404,redirect
 from django.views.generic import ListView, TemplateView
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Producto,Tipo
-from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,FiltrosDetalleVenta
+from .models import Producto,Tipo,Venta,DetalleVenta
+from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,FiltrosDetalleVenta,DetalleVentaForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Venta
-from .forms import VentaForm
+
 
 
 
@@ -157,7 +155,7 @@ def busca_tipos(request):
 
 ######################################################## Ventas
 
-from .models import Producto
+
 #LoginRequieredMixin
 class ListaVentas(ListView):
     model = Venta
@@ -192,8 +190,6 @@ def create_venta(request):
 
 
 
-from .models import DetalleVenta
-from .forms import DetalleVentaForm
 
 def detalle_venta_list(request):
     detalle_venta = DetalleVenta.objects.all()
@@ -212,9 +208,6 @@ class ListaDetalleVenta(ListView):
    
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import DetalleVenta, Venta
-from .forms import DetalleVentaForm
 
 def detalle_venta_create(request):
     if request.method == 'POST':
@@ -253,59 +246,6 @@ def detalle_venta_view(request, id_venta):
     detalle_ventas = DetalleVenta.objects.filter(id_venta=id_venta)
 
     return render(request, 'detalle_venta.html', {'detalle_ventas': detalle_ventas})
-
-
-    #return redirect('bienvenida', pk=venta_pk)
-
-
-#def create_venta(request):
-#    if request.method == 'POST':
-#        form = VentaForm(request.POST)
-#        if form.is_valid():
-#            venta = form.save(commit=False)  # Get the unsaved form instance
-#            producto = venta.producto
-#            existencia = producto.existencia - venta.cantidad  # Assuming the field name is "quantity"
-#            producto.existencia = existencia
-#            producto.save()
-#            form.save()
-#            return redirect('Producto:list')
-#    else:
-#        form = VentaForm()
-#    
-#    return render(request, 'sales/create_venta.html', {'form': form})
-#
-#from .models import Venta
-#
-#def eliminar_venta(request, id):
-#    venta = Venta.objects.get(id=id)
-#
-#    # Store the quantity for later use
-#    cantidad = venta.cantidad
-#
-#    # Delete the venta
-#    venta.delete()
-#
-#    # Reverse the subtraction
-#    producto = venta.producto
-#    producto.existencia += cantidad
-#    producto.save()
-#
-#    return redirect('Producto:list')
-#
-#
-#
-#
-#
-#
-#
-
-
-from django.core.paginator import Paginator
-from django.shortcuts import render
-from decimal import Decimal, ROUND_UP
-from .forms import FiltrosProducto
-from .models import Producto, Venta, DetalleVenta
-
 
 def buscar_detalleventa(request):
     ventas = DetalleVenta.objects.all().order_by('-id_venta')
