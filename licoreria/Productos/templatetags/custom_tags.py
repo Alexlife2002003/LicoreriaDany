@@ -8,7 +8,15 @@ def update_variable(value):
     return value
 
 
+#@register.simple_tag
+#def sum_variable(a, b):
+#    """Adds two variables together and returns the result"""
+#    return a + b
+
 @register.simple_tag
 def sum_variable(a, b):
     """Adds two variables together and returns the result"""
-    return a + b
+    if b:
+        return a + int(b)
+    else:
+        return a

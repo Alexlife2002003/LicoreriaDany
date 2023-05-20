@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Producto,Tipo
-from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta
+from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,FiltrosDetalleVenta
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -167,16 +167,30 @@ class ListaVentas(ListView):
     extra_context = {'form': FiltrosVenta}
 
 
+
+
+
+
+
 @login_required
 def create_venta(request):
-    user = request.user  # Assuming the user is authenticated # Get the current date
+    user = request.user
 
-    # Create a new Venta object with the current date
-    venta = Venta(usuario=user)
-    venta.save()
+    # Check if there is an existing Venta without any DetalleVenta
+    existing_venta = Venta.objects.filter(usuario=user, detalleventa__isnull=True).last()
+
+    if existing_venta:
+        venta = existing_venta
+    else:
+        # Create a new Venta object with the current date
+        venta = Venta(usuario=user)
+        venta.save()
 
     venta_pk = venta.pk
-    return redirect('Producto:detalle_venta_list')
+    return redirect('Producto:detalle_venta_create')
+
+
+
 
 from .models import DetalleVenta
 from .forms import DetalleVentaForm
@@ -184,6 +198,19 @@ from .forms import DetalleVentaForm
 def detalle_venta_list(request):
     detalle_venta = DetalleVenta.objects.all()
     return render(request, 'detalle_venta/list.html', {'detalle_venta': detalle_venta})
+
+
+
+
+class ListaDetalleVenta(ListView):
+    model = DetalleVenta
+    template_name = 'detalle_venta/list.html'
+    context_object_name = 'detalle_venta'
+    paginate_by=10
+    extra_context = {'form': FiltrosDetalleVenta}
+
+   
+
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import DetalleVenta, Venta
@@ -271,3 +298,39 @@ def detalle_venta_view(request, id_venta):
 #
 #
 #
+
+
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from decimal import Decimal, ROUND_UP
+from .forms import FiltrosProducto
+from .models import Producto, Venta, DetalleVenta
+
+
+def buscar_detalleventa(request):
+    ventas = DetalleVenta.objects.all().order_by('-id_venta')
+    
+    if request.method == 'POST':
+        form = FiltrosDetalleVenta(request.POST)
+        # Retrieve filter parameters from the request
+        # Adjust the field names as per your form fields
+        id_venta = request.POST.get('id_venta', None)
+
+        if id_venta:
+            ventas = ventas.filter(id_venta)
+
+        print(ventas.query)
+    else:
+        form = FiltrosDetalleVenta()
+    
+    paginator = Paginator(ventas, 10)  # Show 5 ventas per page.
+    page_number = request.POST.get("page")
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'object_list': page_obj,
+        'page_obj': page_obj,
+        'form': form
+    } 
+    
+    return render(request, 'Productos/detalleventa_list.html', context)

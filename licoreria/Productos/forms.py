@@ -1,7 +1,7 @@
 from django import forms
 from .models import Producto
 from django.urls import reverse_lazy
-from .models import Venta
+from .models import Venta,DetalleVenta
 
 
 
@@ -56,6 +56,13 @@ class VentaForm(forms.ModelForm):
         model = Venta
         fields = '__all__'
 
+        
+        widgets = {
+            'fecha': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Fecha'}),
+            'usuario': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}),
+        }
+
+
 class FiltrosVenta(VentaForm):
     
     def __init__(self, *args, **kwargs):
@@ -64,9 +71,17 @@ class FiltrosVenta(VentaForm):
         for field in self.fields:
             self.fields[field].required = False
 
-from .models import DetalleVenta
 
 class DetalleVentaForm(forms.ModelForm):
     class Meta:
         model = DetalleVenta
         fields = ['producto', 'cantidad']
+    
+
+class FiltrosDetalleVenta(DetalleVentaForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(FiltrosDetalleVenta, self).__init__(*args, **kwargs)
+        
+        for field in self.fields:
+            self.fields[field].required = False
