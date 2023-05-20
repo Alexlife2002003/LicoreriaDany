@@ -1,6 +1,7 @@
 from django.db import models
-from decimal import Decimal
-
+from decimal import Decimal, ROUND_UP
+from django.db import models
+from django.contrib.auth.models import User
 
 
 class Categoria(models.Model):
@@ -48,21 +49,12 @@ class Producto(models.Model):
 
 #########################################################
 
-from django.contrib.auth.models import User
-
 class Venta(models.Model):
     fecha = models.DateField(auto_now_add=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.pk}"
-
-
-
-from decimal import Decimal, ROUND_UP
-from django.db import models
-from django.db.models import Sum, F, DecimalField, ExpressionWrapper
-
 
 class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)

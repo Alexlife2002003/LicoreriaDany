@@ -9,9 +9,6 @@ from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,Filt
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 
-
-
-
 class ListaProductos(ListView):
     #permission_required='materias.permiso_alumno'
     model=Producto
@@ -141,8 +138,6 @@ def eliminar_todas(request):
                 Producto.objects.get(clave=clave).delete()
     return redirect('Producto:lista_productos')
 
-
-
 def busca_tipos(request):
     id_categoria=request.POST.get('id_categoria',None)
     if id_categoria:
@@ -151,11 +146,6 @@ def busca_tipos(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error':'Parametro invalido'},safe=False)
 
-
-
-######################################################## Ventas
-
-
 #LoginRequieredMixin
 class ListaVentas(ListView):
     model = Venta
@@ -163,12 +153,6 @@ class ListaVentas(ListView):
     template_name = 'sales/list_ventas.html'
     context_object_name = 'ventas'
     extra_context = {'form': FiltrosVenta}
-
-
-
-
-
-
 
 @login_required
 def create_venta(request):
@@ -188,15 +172,9 @@ def create_venta(request):
     return redirect('Producto:detalle_venta_create')
 
 
-
-
-
 def detalle_venta_list(request):
     detalle_venta = DetalleVenta.objects.all()
     return render(request, 'detalle_venta/list.html', {'detalle_venta': detalle_venta})
-
-
-
 
 class ListaDetalleVenta(ListView):
     model = DetalleVenta
@@ -204,10 +182,6 @@ class ListaDetalleVenta(ListView):
     context_object_name = 'detalle_venta'
     paginate_by=10
     extra_context = {'form': FiltrosDetalleVenta}
-
-   
-
-
 
 def detalle_venta_create(request):
     if request.method == 'POST':
