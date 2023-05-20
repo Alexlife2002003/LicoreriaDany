@@ -1,14 +1,12 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Proveedor
 from .forms import FormProveedor,FiltrosProveedor
 from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 class ListaProveedores(LoginRequiredMixin,ListView):
     #permission_required='materias.permiso_alumno'
