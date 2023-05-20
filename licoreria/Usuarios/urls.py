@@ -8,7 +8,6 @@ from Usuarios import views
 urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('',Login.as_view(),name="login"),
-    #path('lista', views.ListaUsuarios.as_view(), name='lista_usuarios'),
     path('lista', views.lista_usuarios, name='lista_usuarios'),
     path('nuevo_usuario',views.crear_usuario,name='nuevo_usuario'),
     path('editar_usuario/<int:pk>',views.editar_usuario,name='editar_usuario'),
