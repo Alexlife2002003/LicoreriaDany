@@ -146,14 +146,6 @@ def busca_tipos(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error':'Parametro invalido'},safe=False)
 
-#LoginRequieredMixin
-class ListaVentas(ListView):
-    model = Venta
-    paginate_by = 10
-    template_name = 'sales/list_ventas.html'
-    context_object_name = 'ventas'
-    extra_context = {'form': FiltrosVenta}
-
 @login_required
 def create_venta(request):
     user = request.user
@@ -189,12 +181,18 @@ def detalle_venta_create(request):
         if form.is_valid():
             detalle_venta = form.save(commit=False)  # Create the instance without saving to the database
             last_venta = Venta.objects.last()  # Retrieve the last Venta instance
+            producto=detalle_venta.producto
+            existencia=producto.existencia-detalle_venta.cantidad
+            producto.existencia=existencia
+            producto.save()
             detalle_venta.id_venta = last_venta  # Assign the last Venta as id_venta
             detalle_venta.save()  # Save the instance with the assigned id_venta
-            return redirect('Producto:detalle_venta_list')
+            return redirect('Producto:buscar_venta')
     else:
         form = DetalleVentaForm()
     return render(request, 'detalle_venta/create.html', {'form': form})
+
+
 
 
 def detalle_venta_update(request, pk):
@@ -248,3 +246,36 @@ def buscar_detalleventa(request):
     } 
     
     return render(request, 'Productos/detalleventa_list.html', context)
+
+
+def eliminar_todas_ventas(request):
+    variable_names = list(request.POST.keys())
+    if len(variable_names) != 0:
+        variable_names.pop(0)
+        if len(variable_names) != 0:
+            for id_venta in variable_names:
+                try:
+                    venta = Venta.objects.get(pk=id_venta)
+                    detalles_venta = DetalleVenta.objects.filter(id_venta=venta)
+                    for detalle_venta in detalles_venta:
+                        producto = detalle_venta.producto
+                        existencia = producto.existencia + detalle_venta.cantidad
+                        producto.existencia = existencia
+                        producto.save()
+                    venta.delete()
+                except Venta.DoesNotExist:
+                    pass
+    return redirect('Producto:buscar_venta')
+
+
+
+#def eliminar_todas(request):
+#    variable_names = list(request.POST.keys())
+#    if(len(variable_names)!=0):
+#        variable_names.pop(0)
+#        #print(variable_names)
+#        #print(dict[request.POST])
+#        if(len(variable_names)!=0):
+#            for clave in variable_names:
+#                Producto.objects.get(clave=clave).delete()
+#    return redirect('Producto:lista_productos')

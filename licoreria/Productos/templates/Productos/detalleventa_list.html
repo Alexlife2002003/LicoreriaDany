@@ -42,7 +42,7 @@
         </tr>
     </thead>
     <tbody>
-        <form action="{% url 'Producto:eliminar_todas' %}" method="post">
+        <form action="{% url 'Producto:eliminar_todas_ventas' %}" method="post">
             {% csrf_token %}
             {% load custom_tags %}
             {% with counter=0 %}
@@ -52,7 +52,9 @@
                     {% sum_variable sum detalle.subtotal as sum %}
                     {% if previous_id_venta != detalle.id_venta.pk %}
                     <tr>
-                        <td></td>
+                        <td>
+                            <input type="checkbox" name="{{detalle.id_venta}}" >
+                        </td>
                         <td>{{ detalle.id_venta }}</td>
                         <td>{{ detalle.total }}</td>
                         <td>{{ detalle.id_venta.usuario }}</td>
@@ -77,10 +79,9 @@
             {% endwith %}
             {% endwith %}
             
-        </form>
+       
     </tbody>
 </table>
-
 <button type="submit">Eliminar</button>
 </form>
 <div class="pagination">
