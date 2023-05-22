@@ -8,11 +8,12 @@ from .models import Producto,Tipo,Venta,DetalleVenta
 from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,FiltrosDetalleVenta,DetalleVentaForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib import messages
 
 class ListaProductos(ListView):
     #permission_required='materias.permiso_alumno'
     model=Producto
-    paginate_by=10
+    paginate_by=6
     extra_context = {'form': FiltrosProducto}
 
 class NuevoProducto(CreateView):
@@ -82,7 +83,7 @@ class Bienvenido(TemplateView):
 
 
 def buscar_materia(request):
-    productos = Producto.objects.all().order_by('-nombre','precio')
+    productos = Producto.objects.all().order_by('-clave')
     
     if request.method == 'POST':
         
@@ -116,7 +117,7 @@ def buscar_materia(request):
     else:
         form = FiltrosProducto()
         
-    paginator = Paginator(productos, 2)  # Show 25 contacts per page.
+    paginator = Paginator(productos, 6)  # Show 25 contacts per page.
     page_number = request.POST.get("page")
     page_obj = paginator.get_page(page_number)
     context = {
@@ -175,22 +176,34 @@ class ListaDetalleVenta(ListView):
     paginate_by=10
     extra_context = {'form': FiltrosDetalleVenta}
 
+
+
 def detalle_venta_create(request):
+    message = None  # Initialize the message variable
+    
     if request.method == 'POST':
         form = DetalleVentaForm(request.POST)
         if form.is_valid():
-            detalle_venta = form.save(commit=False)  # Create the instance without saving to the database
-            last_venta = Venta.objects.last()  # Retrieve the last Venta instance
-            producto=detalle_venta.producto
-            existencia=producto.existencia-detalle_venta.cantidad
-            producto.existencia=existencia
+            detalle_venta = form.save(commit=False)
+            last_venta = Venta.objects.last()
+            producto = detalle_venta.producto
+            existencia = producto.existencia - detalle_venta.cantidad
+            
+            if existencia < 0:
+                # Set the message variable
+                
+                return render(request, 'detalle_venta/Insuficiente.html')
+            
+            producto.existencia = existencia
             producto.save()
-            detalle_venta.id_venta = last_venta  # Assign the last Venta as id_venta
-            detalle_venta.save()  # Save the instance with the assigned id_venta
+            detalle_venta.id_venta = last_venta
+            detalle_venta.save()
             return redirect('Producto:buscar_venta')
     else:
         form = DetalleVentaForm()
-    return render(request, 'detalle_venta/create.html', {'form': form})
+        
+    return render(request, 'detalle_venta/create.html', {'form': form, 'message': message})
+
 
 
 

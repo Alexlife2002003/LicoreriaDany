@@ -76,6 +76,7 @@ class DetalleVentaForm(forms.ModelForm):
     class Meta:
         model = DetalleVenta
         fields = ['producto', 'cantidad']
+        
     
 
 class FiltrosDetalleVenta(DetalleVentaForm):

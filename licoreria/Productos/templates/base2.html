@@ -143,6 +143,9 @@
 
             </div>
           </li>
+          {% for group in request.user.groups.all %}
+            {% if group.name == 'Encargado' %}
+           
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#proveedores" aria-expanded="false" aria-controls="proveedores">
               <i class="menu-icon mdi mdi-card-text-outline"></i>
@@ -159,21 +162,32 @@
 
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#usuarios" aria-expanded="false" aria-controls="usuarios">
-              <i class="menu-icon mdi mdi-card-text-outline"></i>
-              <span class="menu-title">Usuarios</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="usuarios">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url 'lista_usuarios' %}">Lista de Usuarios</a></li>
-              </ul>
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url 'nuevo_usuario' %}">Nuevo Usuario</a></li>
-              </ul>
-            </div>
-          </li>
+            {% endif %}
+          {% endfor %}
+  
+          {% for group in request.user.groups.all %}
+            {% if group.name == 'Encargado' %}
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#usuarios" aria-expanded="false" aria-controls="usuarios">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Usuarios</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="usuarios">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'lista_usuarios' %}">Lista de Usuarios</a></li>
+                </ul>
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'nuevo_usuario' %}">Nuevo Usuario</a></li>
+                </ul>
+              </div>
+              </li>
+              {% endif %}
+          {% endfor %}
+              
+
+            
+  
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#Ventas" aria-expanded="false" aria-controls="Ventas">
               <i class="menu-icon mdi mdi-card-text-outline"></i>

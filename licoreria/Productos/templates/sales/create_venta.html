@@ -5,10 +5,17 @@
 {% endblock titulo %}
     
 {% block contenido %}
+
     <h1>Nueva Venta</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_table }}
+        {% if message %}
+    <div class="alert alert-danger">{{ message }}</div>
+{% endif %}
+
+<!-- Rest of your HTML content -->
+
         <button type="submit">Create Sale</button>
       </form>
       

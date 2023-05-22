@@ -35,8 +35,16 @@
             <th>Clave</th>
             <th>Nombre</th>
             <th>Tamaño</th>
-            <th>Precio Bodega</th>
-            <th>Precio Publico</th>
+            {% for group in request.user.groups.all %}
+            {% if group.name == 'Encargado' %}
+                <th>Precio Bodega</th>
+                
+            {% else %}
+                
+            {% endif %}
+        
+          {% endfor %}
+            <th>Precio</th>
             <th>Categoria</th>
             <th>Tipo</th>
             <th>Existencia</th>
@@ -55,7 +63,13 @@
                     <td>{{producto.clave}}</td>
                     <td>{{producto.nombre}}</td>
                     <td>{{producto.get_tamanio_display}}</td>
+                    {% for group in request.user.groups.all %}
+            {% if group.name == 'Encargado' %}
                     <td>{{producto.precio}}</td>
+                   
+            {% endif %}
+        
+          {% endfor %}
                     <td>{{producto.pricedup}}</td>
                     <td>{{producto.categoria}}</td>
                     <td>{{producto.tipo}}</td>
