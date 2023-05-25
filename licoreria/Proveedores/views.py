@@ -7,21 +7,26 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .models import Proveedor
 from .forms import FormProveedor,FiltrosProveedor
 from django.core.paginator import Paginator
+from .decorators import group_required,GroupRequiredMixin
 
-class ListaProveedores(LoginRequiredMixin,ListView):
-    #permission_required='materias.permiso_alumno'
+
+
+
+class ListaProveedores(LoginRequiredMixin,GroupRequiredMixin,ListView):
+    group_required='Owner'
     model=Proveedor
     paginate_by=10
     extra_context = {'form': FiltrosProveedor}
 
-class NuevoProveedor(CreateView):
-    #permission_required='materias.permiso_alumno' #temporalmente
+class NuevoProveedor(LoginRequiredMixin,GroupRequiredMixin,CreateView):
+    group_required='Owner'
     model = Proveedor
     form_class = FormProveedor
     # fields = '_all_'
     success_url = reverse_lazy('lista_proveedores')
     extra_context = {'accion': 'Nueva'}
 
+@group_required('Owner')
 def editar_proveedor(request, clave):
     proveedor = Proveedor.objects.get(clave=clave)
     
@@ -38,12 +43,12 @@ def editar_proveedor(request, clave):
     }   
     return render(request, 'editar_proveedor.html', context)
 
-    
+@group_required('Owner')
 def eliminar_proveedor(request, clave):
     Proveedor.objects.get(clave=clave).delete()
     return redirect('lista_proveedores')
 
-
+@group_required('Owner')
 def buscar_proveedor(request):
     proveedores = Proveedor.objects.all().order_by('-nombreEmpresa','nombreSupervisor')
     
@@ -100,6 +105,7 @@ def buscar_proveedor(request):
     
     return render(request, 'Proveedores/proveedor_list.html', context)
 
+@group_required('Owner')
 def eliminar_todas(request):
     variable_names = list(request.POST.keys())
     if(len(variable_names)!=0):

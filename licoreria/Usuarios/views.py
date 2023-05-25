@@ -6,19 +6,22 @@ from django.views.generic import ListView
 from .forms import FormUsuariosLicoreria,FiltrosUsuario
 from django.views.generic import DeleteView
 from django.contrib.auth.models import User, Group
+from Proveedores.decorators import GroupRequiredMixin,group_required
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 class Login(LoginView):
     template_name = 'login.html'
     form_class = AuthenticationForm
 
 
-class ListaUsuarios(ListView):
-    #permission_required='materias.permiso_alumno'
+class ListaUsuarios(LoginRequiredMixin,GroupRequiredMixin,ListView):
+    group_required='Owner'
     model=User
     paginate_by=10
     template_name = 'lista_usuarios.html'
     extra_context = {'form': FiltrosUsuario}
 
+@group_required('Owner')
 def lista_usuarios(request):
     usuarios = User.objects.all()
     grupos = Group.objects.all()
@@ -31,6 +34,7 @@ def lista_usuarios(request):
     
     return render(request, 'lista_usuarios.html', context)
 
+@group_required('Owner')
 def crear_usuario(request):
     if request.method == 'POST':
         form = FormUsuariosLicoreria(request.POST)
@@ -41,7 +45,7 @@ def crear_usuario(request):
         form = FormUsuariosLicoreria()
     return render(request, 'usuario_form.html', {'form': form})
 
-
+@group_required('Owner')
 def editar_usuario(request, pk):
     user = User.objects.get(pk=pk)
     if request.method == 'POST':
@@ -53,6 +57,7 @@ def editar_usuario(request, pk):
         form = FormUsuariosLicoreria(instance=user)
     return render(request, 'usuario_form.html', {'form': form})
 
+@group_required('Owner')
 def eliminar_usuario(request, id):
     user = get_object_or_404(User, id=id)
     usuario_licoreria = user.usuarioslicoreria
@@ -61,13 +66,14 @@ def eliminar_usuario(request, id):
     user.delete()
     return redirect('lista_usuarios')
 
-class EliminarDocentes(DeleteView):
+class EliminarUsuario(LoginRequiredMixin,GroupRequiredMixin,DeleteView):
+    group_required='Owner'
     model = User
     template_name = 'user_confirm_delete.html'
     success_url = reverse_lazy('lista_usuarios')
 
 
-
+@group_required('Owner')
 def asignar_grupo(request):
     #print(dict[request.POST])
     variable_names=list(request.POST.keys())
@@ -81,7 +87,7 @@ def asignar_grupo(request):
 
     return redirect('lista_usuarios')
 
-
+@group_required('Owner')
 def remove_user_groups(request, pk):
     user = User.objects.get(id=pk)
     user.groups.clear()

@@ -144,7 +144,7 @@
             </div>
           </li>
           {% for group in request.user.groups.all %}
-            {% if group.name == 'Encargado' %}
+            {% if group.name == 'Owner' %}
            
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#proveedores" aria-expanded="false" aria-controls="proveedores">
@@ -166,7 +166,7 @@
           {% endfor %}
   
           {% for group in request.user.groups.all %}
-            {% if group.name == 'Encargado' %}
+            {% if group.name == 'Owner' %}
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#usuarios" aria-expanded="false" aria-controls="usuarios">
                 <i class="menu-icon mdi mdi-card-text-outline"></i>

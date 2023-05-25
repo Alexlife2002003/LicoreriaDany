@@ -36,7 +36,7 @@
             <th>Nombre</th>
             <th>Tamaño</th>
             {% for group in request.user.groups.all %}
-            {% if group.name == 'Encargado' %}
+            {% if group.name == 'Owner' %}
                 <th>Precio Bodega</th>
                 
             {% else %}
@@ -64,7 +64,7 @@
                     <td>{{producto.nombre}}</td>
                     <td>{{producto.get_tamanio_display}}</td>
                     {% for group in request.user.groups.all %}
-            {% if group.name == 'Encargado' %}
+            {% if group.name == 'Owner' %}
                     <td>{{producto.precio}}</td>
                    
             {% endif %}

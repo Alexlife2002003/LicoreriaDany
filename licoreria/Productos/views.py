@@ -9,21 +9,23 @@ from .forms import FormProducto,FiltrosProducto,FormExistencia,FiltrosVenta,Filt
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib import messages
+from Proveedores.decorators import GroupRequiredMixin,group_required
 
-class ListaProductos(ListView):
-    #permission_required='materias.permiso_alumno'
+class ListaProductos(LoginRequiredMixin,GroupRequiredMixin,ListView):
+    group_required='Empleado'
     model=Producto
     paginate_by=6
     extra_context = {'form': FiltrosProducto}
 
-class NuevoProducto(CreateView):
-    #permission_required='materias.permiso_alumno' #temporalmente
+class NuevoProducto(LoginRequiredMixin,GroupRequiredMixin,CreateView):
+    group_required='Owner'
     model = Producto
     form_class = FormProducto
     # fields = '_all_'
     success_url = reverse_lazy('Producto:lista_productos')
     extra_context = {'accion': 'Nueva'}
 
+@group_required('Owner')
 def editar_producto(request, clave):
     producto = Producto.objects.get(clave=clave)
     
@@ -40,7 +42,7 @@ def editar_producto(request, clave):
     }   
     return render(request, 'editar_producto.html', context)
 
-
+@group_required('Owner')
 def editar_productoExistencia(request, clave):
     producto = Producto.objects.get(clave=clave)
 
@@ -73,7 +75,7 @@ def editar_productoExistencia(request, clave):
 
 
 
-    
+@group_required('Owner')    
 def eliminar_producto(request, clave):
     Producto.objects.get(clave=clave).delete()
     return redirect('Producto:lista_productos')
@@ -81,7 +83,7 @@ def eliminar_producto(request, clave):
 class Bienvenido(TemplateView):
     template_name = 'home.html'
 
-
+@group_required('Empleado')
 def buscar_materia(request):
     productos = Producto.objects.all().order_by('-clave')
     
@@ -128,6 +130,7 @@ def buscar_materia(request):
     
     return render(request, 'Productos/producto_list.html', context)
 
+@group_required('Owner')
 def eliminar_todas(request):
     variable_names = list(request.POST.keys())
     if(len(variable_names)!=0):
@@ -139,6 +142,7 @@ def eliminar_todas(request):
                 Producto.objects.get(clave=clave).delete()
     return redirect('Producto:lista_productos')
 
+@group_required('Empleado')
 def busca_tipos(request):
     id_categoria=request.POST.get('id_categoria',None)
     if id_categoria:
@@ -147,7 +151,7 @@ def busca_tipos(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error':'Parametro invalido'},safe=False)
 
-@login_required
+@group_required('Empleado')
 def create_venta(request):
     user = request.user
 
@@ -164,12 +168,14 @@ def create_venta(request):
     venta_pk = venta.pk
     return redirect('Producto:detalle_venta_create')
 
-
+@group_required('Empleado')
 def detalle_venta_list(request):
     detalle_venta = DetalleVenta.objects.all()
     return render(request, 'detalle_venta/list.html', {'detalle_venta': detalle_venta})
 
+
 class ListaDetalleVenta(ListView):
+    group_required='Empleado'
     model = DetalleVenta
     template_name = 'detalle_venta/list.html'
     context_object_name = 'detalle_venta'
@@ -177,7 +183,7 @@ class ListaDetalleVenta(ListView):
     extra_context = {'form': FiltrosDetalleVenta}
 
 
-
+@group_required('Empleado')
 def detalle_venta_create(request):
     message = None  # Initialize the message variable
     
@@ -206,8 +212,6 @@ def detalle_venta_create(request):
 
 
 
-
-
 def detalle_venta_update(request, pk):
     detalle_venta = get_object_or_404(DetalleVenta, pk=pk)
     if request.method == 'POST':
@@ -219,6 +223,7 @@ def detalle_venta_update(request, pk):
         form = DetalleVentaForm(instance=detalle_venta)
     return render(request, 'detalle_venta/update.html', {'form': form})
 
+@group_required('Owner')
 def detalle_venta_delete(request, pk):
     detalle_venta = get_object_or_404(DetalleVenta, pk=pk)
     if request.method == 'POST':
@@ -226,12 +231,13 @@ def detalle_venta_delete(request, pk):
         return redirect('detalle_venta_list')
     return render(request, 'detalle_venta/delete.html', {'detalle_venta': detalle_venta})
 
-
+@group_required('Empleado')
 def detalle_venta_view(request, id_venta):
     detalle_ventas = DetalleVenta.objects.filter(id_venta=id_venta)
 
     return render(request, 'detalle_venta.html', {'detalle_ventas': detalle_ventas})
 
+@group_required('Empleado')
 def buscar_detalleventa(request):
     ventas = DetalleVenta.objects.all().order_by('-id_venta')
     
@@ -260,7 +266,7 @@ def buscar_detalleventa(request):
     
     return render(request, 'Productos/detalleventa_list.html', context)
 
-
+@group_required('Owner')
 def eliminar_todas_ventas(request):
     variable_names = list(request.POST.keys())
     if len(variable_names) != 0:

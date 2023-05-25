@@ -1,28 +1,58 @@
+<!-- home.html -->
 {% extends 'base2.html' %}
 {% load static %}
 
 {% block titulo %}
     Insuficiente
 {% endblock titulo %}
-    
+
 {% block contenido %}
+    <div class="container">
+        <h2 class="error-message">El producto no se encuentra con la cantidad que se intentó vender</h2>
 
-    <h2 class="error-message">El producto no se encuentra con la cantidad que se intento vender</h2>
+        <br>
+        <h2>Revise las cantidades en la lista de productos</h2>
+        <img src="{% static 'img/empty-box.png' %}" alt="Caja vacía" height="500px">
 
-    <br>
-    <h2>Revise las cantidades en la lista de productos</h2>
-    <img src="{% static 'img/empty-box.png' %}" alt="Caja vacia" height="500px">
-    
+        <br>
+        <a href="javascript:history.back()" class="return-link">Volver a la página anterior</a>
+    </div>
+
     <style>
-        .error-message {
-             color: #ff0000; /* Red text color */
-             font-weight: bold; /* Make the text bold */
-             background-color: #ffecec; /* Light red background color */
-             border: 1px solid #ff0000; /* Red border */
-             padding: 10px; /* Add some padding around the message */
+        body {
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
         }
 
-    </style>
-    
-{% endblock contenido %}
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
+        .error-message {
+            color: #ff0000;
+            font-weight: bold;
+            background-color: #ffecec;
+            border: 1px solid #ff0000;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        img {
+            width: auto;
+            max-height: 500px;
+            border-radius: 10px;
+        }
+
+        .return-link {
+            color: #007bff;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock contenido %}
