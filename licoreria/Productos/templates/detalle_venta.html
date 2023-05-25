@@ -1,3 +1,4 @@
+<!-- home.html -->
 {% extends 'base2.html' %}
 
 {% block titulo %}
@@ -13,12 +14,14 @@
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
+            background-color: #f9f9f9;
         }
 
         .ticket h1 {
             font-size: 24px;
             margin-bottom: 10px;
             text-align: center;
+            color: #333;
         }
 
         .ticket table {
@@ -31,6 +34,7 @@
         .ticket td {
             padding: 8px;
             border-bottom: 1px solid #ccc;
+            text-align: center;
         }
 
         .ticket thead th {
@@ -45,66 +49,65 @@
 
         .ticket .total-row {
             background-color: #f5f5f5;
+            font-weight: bold;
         }
 
         .ticket .receipt-info {
             margin-top: 20px;
             text-align: center;
             font-size: 14px;
+            color: #777;
         }
     </style>
-  
-  <div class="ticket">
-    <h1>Detalle de Venta</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Tamaño</th>
-                <th>Categoria</th>
-                <th>Tipo</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% load custom_tags %}
-        {% with total=0 %}
-        {% with amountsold=0 %}
-    {% for detalle_venta in detalle_ventas %}
-        <tr>
-            <td>{{ detalle_venta.producto.nombre }}</td>
-            <td>{{ detalle_venta.producto.get_tamanio_display }}</td>
-            <td>{{ detalle_venta.producto.categoria }}</td>
-            <td>{{ detalle_venta.producto.tipo }}</td>
-            <td>{{ detalle_venta.cantidad }}</td>
-            <td>{{ detalle_venta.subtotal }}</td>
-        </tr>
-        {% sum_variable total detalle_venta.subtotal as total %}
-        {% sum_variable amountsold detalle_venta.cantidad as amountsold%}
-        {% if forloop.last %}
-    </tbody>
-    <tfoot>
-        <tr class="total-row">
-            <td colspan="4">Total</td>
-            <td>{{amountsold}}</td>
-            <td>{{total}}</td>
-        </tr>
-    </tfoot>
-</table>
-<div class="receipt-info">
-    <p>Licoreria Dany</p>
-    <p>Benito Juárez 20, Zona Centro</p>
-    <p>Date: {{ detalle_venta.id_venta.fecha}}</p>
-</div>
-</div>
 
+    <div class="ticket">
+        <h1>Detalle de Venta</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Tamaño</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% load custom_tags %}
+                {% with total=0 %}
+                {% with amountsold=0 %}
+                {% for detalle_venta in detalle_ventas %}
+                <tr>
+                    <td>{{ detalle_venta.producto.nombre }}</td>
+                    <td>{{ detalle_venta.producto.get_tamanio_display }}</td>
+                    <td>{{ detalle_venta.producto.categoria }}</td>
+                    <td>{{ detalle_venta.producto.tipo }}</td>
+                    <td>{{ detalle_venta.cantidad }}</td>
+                    <td>{{ detalle_venta.subtotal }}</td>
+                </tr>
+                {% sum_variable total detalle_venta.subtotal as total %}
+                {% sum_variable amountsold detalle_venta.cantidad as amountsold %}
+                {% if forloop.last %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="4">Total</td>
+                    <td>{{ amountsold }}</td>
+                    <td>{{ total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="receipt-info">
+            <p>Licoreria Dany</p>
+            <p>Benito Juárez 20, Zona Centro</p>
+            <p>Date: {{ detalle_venta.id_venta.fecha }}</p>
+            <p>Vendido por: {{detalle_venta.id_venta.usuario.first_name}} {{detalle_venta.id_venta.usuario.last_name}}</p>
+        </div>
+    </div>
 
     {% endif %}
     {% endfor %}
-    
-{% endwith %}
-{% endwith %}
-
-    
+    {% endwith %}
+    {% endwith %}
 {% endblock contenido %}
