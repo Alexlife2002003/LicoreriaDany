@@ -1,6 +1,2 @@
 # LicoreriaDany
-
-El usuario y contraseña para pasar el login es:
-
-usuario: admin
-contraseña: 2002
+Es un sistema para el control de inventario de una licoreria, al igual que llevar un control de ventas y de proveedores de forma sencilla.
